@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: docker-image-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: docker_image
+      POSTGRES_USER: docker_image
+      POSTGRES_PASSWORD: docker_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docker_image -d docker_image"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: docker_image_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+
+  app:
+    build:
+      context: ./aegira-loan-service
+    container_name: docker-image-backend
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/docker_image
+      SPRING_DATASOURCE_USERNAME: docker_image
+      SPRING_DATASOURCE_PASSWORD: docker_password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production-123456}
+      JWT_EXPIRATION: 3600000
+      LOAN_DATA_SOURCE_MODE: ${LOAN_DATA_SOURCE_MODE:-DATABASE}
+      IDEMPOTENCY_ENABLED: ${IDEMPOTENCY_ENABLED:-true}
+      IDEMPOTENCY_TTL_SECONDS: 86400
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+
+  frontend:
+    build:
+      context: ./creditappdemo
+    container_name: docker-image-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+
+volumes:
+  postgres_data:
+  redis_data:
