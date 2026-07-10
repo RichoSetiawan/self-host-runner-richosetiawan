@@ -2,9 +2,9 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/aegira_loan}
-    username: ${SPRING_DATASOURCE_USERNAME:aegira}
-    password: ${SPRING_DATASOURCE_PASSWORD:aegira_password}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/docker_image}
+    username: ${SPRING_DATASOURCE_USERNAME:docker_image}
+    password: ${SPRING_DATASOURCE_PASSWORD:docker_password}
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: AegiraLoanHikariPool

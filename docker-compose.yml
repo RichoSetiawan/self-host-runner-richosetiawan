@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_DB: docker_image
       POSTGRES_USER: docker_image
-      POSTGRES_PASSWORD: docker_password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-docker_password}   # dari env atau default
     ports:
       - "5432:5432"
     volumes:
@@ -56,10 +56,10 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/docker_image
       SPRING_DATASOURCE_USERNAME: docker_image
-      SPRING_DATASOURCE_PASSWORD: docker_password
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-docker_password}
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production-123456}
+      JWT_SECRET: ${JWT_SECRET}                                    # wajib dari secret
       JWT_EXPIRATION: 3600000
       LOAN_DATA_SOURCE_MODE: ${LOAN_DATA_SOURCE_MODE:-DATABASE}
       IDEMPOTENCY_ENABLED: ${IDEMPOTENCY_ENABLED:-true}
