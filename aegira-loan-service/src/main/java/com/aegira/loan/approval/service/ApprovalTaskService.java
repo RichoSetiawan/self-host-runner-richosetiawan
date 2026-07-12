@@ -48,6 +48,7 @@ public class ApprovalTaskService {
         return page(items, filter.getPage(), filter.getSize());
     }
 
+    
     private ApprovalTaskItemResponse toItem(LoanApplication application) {
         Optional<LoanCalculation> calculation = loanCalculationRepository.findTopByLoanApplicationIdOrderByCreatedAtDesc(application.getId());
         return ApprovalTaskItemResponse.builder()
