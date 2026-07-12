@@ -1,13 +1,17 @@
-name: 🚀 Deploy ke Laptop (Self-Hosted Container Runner)
+name: Deploy ke Laptop (Self-Hosted Container Runner)
 
 on:
   push:
     branches:
       - main
 
+concurrency:
+  group: deploy-laptop
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
-    runs-on: docker-local        # label yang kita set di container runner
+    runs-on: docker-local
 
     steps:
       - name: ⬇️ Checkout kode
@@ -21,3 +25,14 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           LOAN_DATA_SOURCE_MODE: ${{ secrets.LOAN_DATA_SOURCE_MODE }}
           IDEMPOTENCY_ENABLED: ${{ secrets.IDEMPOTENCY_ENABLED }}
+
+      - name: 🩺 Cek kesehatan backend
+        run: |
+          for i in {1..12}; do
+            curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health | grep 200 && exit 0
+            sleep 5
+          done
+          echo "Backend tidak sehat!" && exit 1
+
+      - name: 🧹 Hapus image lama
+        run: docker image prune -f
