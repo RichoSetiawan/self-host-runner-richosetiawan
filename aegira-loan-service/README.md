@@ -10,6 +10,7 @@ Mini Loan Origination System for agent loan submission, credit risk calculation,
 The PRD explains the product scope, user flow, business rules, and acceptance criteria.
 The TRD explains the technical design, architecture, database schema, API contract, idempotency, feature flag, Redis, Docker, and implementation rules.
 
+
 ## Tech Stack
 
 - Java 8
