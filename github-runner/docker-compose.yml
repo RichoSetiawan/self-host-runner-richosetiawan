@@ -7,7 +7,7 @@ services:
     environment:
       - REPO_URL=https://github.com/RichoSetiawan/self-host-runner-richosetiawan  # ganti dengan punyamu
       - RUNNER_NAME=laptop-runner
-      - RUNNER_TOKEN=AWBX2J5577QMZCFX7MVO6YLKKRFTA                    # token yang baru disalin
+      - RUNNER_TOKEN=AWBX2JZTOXWAPHGKKJOIPGTKKRNLM                    # token yang baru disalin
       - LABELS=docker-local
       - RUNNER_REUSE=true                                 # PENTING: agar runner tidak didaftarkan ulang setiap start
       - EPHEMERAL=false                                   # pastikan tidak ephemeral
