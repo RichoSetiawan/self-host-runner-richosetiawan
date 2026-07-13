@@ -40,7 +40,7 @@ services:
           memory: 256M
 
   app:
-    image: ${DOCKER_USERNAME:}/docker-image-backend:latest          # ← gunakan image dari registry
+    image: ${DOCKER_USERNAME:-zeztzexdream}/docker-image-backend:latest          # ← gunakan image dari registry
     container_name: docker-image-backend
     restart: unless-stopped
     security_opt:
